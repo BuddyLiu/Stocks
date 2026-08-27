@@ -1,17 +1,17 @@
-//
-//  StocksApp.swift
-//  Stocks
-//
-//  Created by bo.liu on 2026/8/27.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct StocksApp: App {
+    @StateObject private var settings = AppSettings()
+    @StateObject private var service = MarketDataService.shared
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(settings)
+                .environmentObject(service)
+                .modelContainer(for: [WatchItem.self, Holding.self])
         }
     }
 }

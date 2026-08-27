@@ -1,24 +1,36 @@
-//
-//  ContentView.swift
-//  Stocks
-//
-//  Created by bo.liu on 2026/8/27.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selection: SidebarItem? = .dashboard
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationSplitView {
+            List(SidebarItem.allCases, selection: $selection) { item in
+                Label(item.title, systemImage: item.icon)
+                    .tag(item)
+            }
+            .navigationSplitViewColumnWidth(min: 180, ideal: 210, max: 260)
+            .navigationTitle("巴菲特助手")
+        } detail: {
+            switch selection ?? .dashboard {
+            case .dashboard:
+                DashboardView()
+            case .watchlist:
+                WatchlistView()
+            case .holdings:
+                HoldingsView()
+            case .screener:
+                ScreenerView()
+            case .settings:
+                SettingsView()
+            }
         }
-        .padding()
+        .frame(minWidth: 920, minHeight: 640)
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(AppSettings())
+        .environmentObject(MarketDataService.shared)
 }
